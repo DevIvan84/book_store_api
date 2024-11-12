@@ -6,11 +6,11 @@ import com.todotic.bookstoreapi.model.entity.Book;
 import com.todotic.bookstoreapi.model.dto.BookFormDTO;
 import com.todotic.bookstoreapi.repository.BookRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @AllArgsConstructor
@@ -34,7 +34,7 @@ public class AdminBookService {
         boolean slugAlreadyExists = bookRepository.existsBySlug(slug);
 
         if(slugAlreadyExists) {
-            throw new BadRequestException("El slug ya eta siendo utilizado por otro libro");
+            throw new BadRequestException("El slug ya esta siendo utilizado por otro libro");
         }
 
         Book book = new Book();
@@ -46,7 +46,7 @@ public class AdminBookService {
         book.setCoverPath(bookFormDTO.getCoverPath());
         book.setFilePath(bookFormDTO.getFilePath());
 
-        book.setCreatedAt(LocalDateTime.now());
+        //book.setCreatedAt(LocalDateTime.now());
 
         return bookRepository.save(book);
     }
@@ -68,15 +68,17 @@ public class AdminBookService {
             throw new BadRequestException("El slug ya esta siendo utilizado por otro libro");
         }
 
-        bookFromDb.setTitle(bookFormDTO.getTitle());
-        bookFromDb.setDescription(bookFormDTO.getDescription());
-        bookFromDb.setPrice(bookFormDTO.getPrice());
-        bookFromDb.setSlug(bookFormDTO.getSlug());
-        bookFromDb.setCoverPath(bookFormDTO.getCoverPath());
-        bookFromDb.setFilePath(bookFormDTO.getFilePath());
+        BeanUtils.copyProperties(bookFormDTO, bookFromDb);
+
+        //bookFromDb.setTitle(bookFormDTO.getTitle());
+        //bookFromDb.setDescription(bookFormDTO.getDescription());
+        //bookFromDb.setPrice(bookFormDTO.getPrice());
+        //bookFromDb.setSlug(bookFormDTO.getSlug());
+        //bookFromDb.setCoverPath(bookFormDTO.getCoverPath());
+        //bookFromDb.setFilePath(bookFormDTO.getFilePath());
 
 
-        bookFromDb.setUpdatedAt(LocalDateTime.now());
+        //bookFromDb.setUpdatedAt(LocalDateTime.now());
 
         return bookRepository.save(bookFromDb);
     }
